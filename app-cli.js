@@ -983,6 +983,7 @@ function chinachuIrcbot() {
 // (function) rule checker
 function isMatchedProgram(program) {
 	var result = false;
+	var nf = "NFKC";
 	
 	// -id, --id
 	if (opts.get('id') && (opts.get('id') === program.id)) {
@@ -1048,10 +1049,11 @@ function isMatchedProgram(program) {
 			if ((rule.duration.min > program.seconds) || (rule.duration.max < program.seconds)) return;
 		}
 		
+		var title_norm = program.title.normalize(nf);
 		// ignore_titles
 		if (rule.ignore_titles) {
 			for (var i = 0; i < rule.ignore_titles.length; i++) {
-				if (program.title.match(rule.ignore_titles[i]) !== null) return;
+				if (title_norm.match(new RegExp(rule.ignore_titles[i].normalize(nf))) !== null) return;
 			}
 		}
 		
@@ -1060,18 +1062,22 @@ function isMatchedProgram(program) {
 			var isFound = false;
 			
 			for (var i = 0; i < rule.reserve_titles.length; i++) {
-				if (program.title.match(rule.reserve_titles[i]) !== null) isFound = true;
+				if (title_norm.match(new RegExp(rule.reserve_titles[i].normalize(nf))) !== null) isFound = true;
 			}
 			
 			if (!isFound) return;
 		}
 		
+		var detail_norm = "";
+		if (program.detail) {
+			detail_norm = program.detail.normalize(nf);
+		}
 		// ignore_descriptions
 		if (rule.ignore_descriptions) {
 			if (!program.detail) return;
 			
 			for (var i = 0; i < rule.ignore_descriptions.length; i++) {
-				if (program.detail.match(rule.ignore_descriptions[i]) !== null) return;
+				if (detail_norm.match(new RegExp(rule.ignore_descriptions[i].normalize(nf))) !== null) return;
 			}
 		}
 		
@@ -1082,7 +1088,7 @@ function isMatchedProgram(program) {
 			var isFound = false;
 			
 			for (var i = 0; i < rule.reserve_descriptions.length; i++) {
-				if (program.detail.match(rule.reserve_descriptions[i]) !== null) isFound = true;
+				if (detail_norm.match(new RegExp(rule.reserve_descriptions[i].normalize(nf))) !== null) isFound = true;
 			}
 			
 			if (!isFound) return;
