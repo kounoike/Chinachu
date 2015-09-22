@@ -141,6 +141,8 @@ P = Class.create(P, {
 		
 		var programs = [];
 		
+		var query = this.self.query;
+
 		var program;
 		for (var i = 0, l = global.chinachu.schedule.length; i < l; i++) {
 			for (var j = 0, m = global.chinachu.schedule[i].programs.length; j < m; j++) {
@@ -148,16 +150,16 @@ P = Class.create(P, {
 				
 				if (program.end < time) continue;
 				
-				if (this.self.query.pgid && this.self.query.pgid !== program.id) continue;
-				if (this.self.query.chid && this.self.query.chid !== program.channel.id) continue;
-				if (this.self.query.cat && this.self.query.cat !== program.category) continue;
-				if (this.self.query.type && this.self.query.type !== program.channel.type) continue;
-				if (this.self.query.title && program.fullTitle.match(this.self.query.title) === null) continue;
-				if (this.self.query.desc && (!program.detail || program.detail.match(this.self.query.desc) === null)) continue;
+				if (query.pgid && query.pgid !== program.id) continue;
+				if (query.chid && query.chid !== program.channel.id) continue;
+				if (query.cat && query.cat !== program.category) continue;
+				if (query.type && query.type !== program.channel.type) continue;
+				if (query.title && program.fullTitle.match(query.title) === null) continue;
+				if (query.desc && (!program.detail || program.detail.match(query.desc) === null)) continue;
 				
-				if (this.self.query.start || this.self.query.end) {
-					var ruleStart = parseInt(this.self.query.start || 0, 10);
-					var ruleEnd   = parseInt(this.self.query.end || 24, 10);
+				if (query.start || query.end) {
+					var ruleStart = parseInt(query.start || 0, 10);
+					var ruleEnd   = parseInt(query.end || 24, 10);
 					
 					var progStart = new Date(program.start).getHours();
 					var progEnd   = new Date(program.end).getHours();
@@ -338,8 +340,17 @@ P = Class.create(P, {
 			this.self.query.desc = decodeURIComponent(this.self.query.desc || '');
 		}
 		
+
+		var viewSearchForm = flagrate.createForm({
+			formWidth  : '100%',
+			labelWidth : '100px',
+			labelAlign : 'right',
+			fields     : chinachu.ui.CreateRuleSerarchFormField()
+		});
+		
 		var modal = new flagrate.Modal({
 			title  : '番組検索',
+			element: viewSearchForm.element,
 			buttons: [
 				{
 					label   : '検索',
@@ -347,10 +358,27 @@ P = Class.create(P, {
 					onSelect: function(e, modal) {
 						e.targetButton.disable();
 						
-						var result = viewSearchForm.result();
-						
-						result.title = encodeURIComponent(result.title);
-						result.desc = encodeURIComponent(result.desc);
+						var result = viewSearchForm.getResult();
+
+						if (!result.duration.min) {
+							delete result.duration.min;
+						}
+						if (!result.duration.max) {
+							delete result.duration.max;
+						}
+						if (!result.duration.min && !result.duration.max) {
+							delete result.duration;
+						}
+
+						var i;
+						for (i in result) {
+							if (typeof result[i] === 'object' && result[i].length === 0) {
+								delete result[i];
+							}
+						}
+
+						// result.title = encodeURIComponent(result.title);
+						// result.desc = encodeURIComponent(result.desc);
 						
 						this.self.query = Object.extend(this.self.query, result);
 						this.self.query.skip = 1;
@@ -364,114 +392,7 @@ P = Class.create(P, {
 				}
 			]
 		}).show();
-		
-		var viewSearchForm = new Hyperform({
-			formWidth  : '100%',
-			labelWidth : '100px',
-			labelAlign : 'right',
-			fields     : [
-				{
-					key   : 'cat',
-					label : 'カテゴリー',
-					input : {
-						type : 'pulldown',
-						items: (function() {
-							var array = [];
 
-							[
-								'anime', 'information', 'news', 'sports',
-								'variety', 'drama', 'music', 'cinema', 'etc'
-							].each(function(a) {
-								array.push({
-									label     : a,
-									value     : a,
-									isSelected: (this.self.query.cat === a)
-								});
-							}.bind(this));
-
-							return array;
-						}.bind(this))()
-					}
-				},
-				{
-					key   : 'title',
-					label : 'タイトル',
-					input : {
-						type : 'text',
-						value: this.self.query.title || ''
-					}
-				},
-				{
-					key   : 'desc',
-					label : '説明',
-					input : {
-						type : 'text',
-						value:  this.self.query.desc || ''
-					}
-				},
-				{
-					key   : 'type',
-					label : 'タイプ',
-					input : {
-						type : 'pulldown',
-						items: (function() {
-							var array = [];
-
-							['GR', 'BS', 'CS', 'EX'].each(function(a) {
-								array.push({
-									label     : a,
-									value     : a,
-									isSelected: ((this.self.query.type || []).indexOf(a) !== -1)
-								});
-							}.bind(this));
-
-							return array;
-						}.bind(this))()
-					}
-				},
-				{
-					key   : 'start',
-					label : '何時から',
-					input : {
-						type      : 'text',
-						width     : 25,
-						maxlength : 2,
-						appendText: '時',
-						value   : this.self.query.start || '',
-						isNumber: true
-					}
-				},
-				{
-					key   : 'end',
-					label : '何時まで',
-					input : {
-						type      : 'text',
-						width     : 25,
-						maxlength : 2,
-						appendText: '時',
-						value     : this.self.query.end || '',
-						isNumber  : true
-					}
-				},
-				{
-					key   : 'pgid',
-					label : 'プログラムID',
-					input : {
-						type : 'text',
-						value:  this.self.query.pgid || ''
-					}
-				},
-				{
-					key   : 'chid',
-					label : 'チャンネルID',
-					input : {
-						type : 'text',
-						value:  this.self.query.chid || ''
-					}
-				}
-			]
-		}).render(modal.content);
-		
 		return this;
 	}
 });

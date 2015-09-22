@@ -1876,4 +1876,135 @@
 		}
 	});
 	
+	ui.CreateRuleSerarchFormField = function() {
+	return [
+			{
+				key  : 'types',
+				label: 'タイプ',
+				input: {
+					type : 'checkboxes',
+					items: ['GR', 'BS', 'CS', 'EX']
+				}
+			},
+			{
+				key  : 'categories',
+				label: 'ジャンル',
+				input: {
+					type : 'checkboxes',
+					items: [
+						'anime', 'information', 'news', 'sports',
+						'variety', 'drama', 'music', 'cinema', 'etc'
+					]
+				}
+			},
+			{
+				key  : 'channels',
+				label: '対象CH',
+				input: {
+					type : formInputTypeChannels,
+					style: { width: '100%' }
+				}
+			},
+			{
+				key  : 'ignore_channels',
+				label: '無視CH',
+				input: {
+					type : formInputTypeChannels,
+					style: { width: '100%' }
+				}
+			},
+			{
+				key  : 'reserve_flags',
+				label: '対象フラグ',
+				input: {
+					type : 'checkboxes',
+					items: ['新', '終', '再', '字', 'デ', '解', '無', '二', 'Ｓ']
+				}
+			},
+			{
+				key  : 'ignore_flags',
+				label: '無視フラグ',
+				input: {
+					type : 'checkboxes',
+					items: ['新', '終', '再', '字', 'デ', '解', '無', '二', 'Ｓ']
+				}
+			},
+			{
+				key  : 'start',
+				point: '/hour/start',
+				label: '何時から',
+				input: {
+					type     : 'number',
+					style    : { width: '60px' },
+					maxLength: 2,
+					max      : 24,
+					min      : 0,
+					val      : 0
+				}
+			},
+			{
+				key   : 'end',
+				point : '/hour/end',
+				label : '何時まで',
+				input : {
+					type     : 'number',
+					style    : { width: '60px' },
+					maxLength: 2,
+					max      : 24,
+					min      : 0,
+					val      : 24
+				}
+			},
+			{
+				key  : 'mini',
+				point: '/duration/min',
+				label: '最短長さ(秒)',
+				input: {
+					type : 'number',
+					style: { width: '80px' }
+				}
+			},
+			{
+				key   : 'maxi',
+				point: '/duration/max',
+				label : '最長長さ(秒)',
+				input : {
+					type : 'number',
+					style: { width: '80px' }
+				}
+			},
+			{
+				key   : 'reserve_titles',
+				label : '対象タイトル',
+				input : {
+					type : formInputTypeStrings,
+					style: { width: '100%' }
+				}
+			},
+			{
+				key   : 'ignore_titles',
+				label : '無視タイトル',
+				input : {
+					type : formInputTypeStrings,
+					style: { width: '100%' }
+				}
+			},
+			{
+				key   : 'reserve_descriptions',
+				label : '対象説明文',
+				input : {
+					type : formInputTypeStrings,
+					style: { width: '100%' }
+				}
+			},
+			{
+				key   : 'ignore_descriptions',
+				label : '無視説明文',
+				input : {
+					type : formInputTypeStrings,
+					style: { width: '100%' }
+				}
+			}
+		];
+	};
 })();
