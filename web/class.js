@@ -2080,10 +2080,9 @@
 	});
 
 	// 単体のルールとのマッチ判定
-	util.programMatchesRule = function (rule, program) {
+	util.programMatchesRule = function (rule, program, nf) {
 		var i, j, l, m, isFound;
 	
-		var nf = "NFKC";
 		var fullTitle_norm = program.fullTitle.normalize(nf);
 		var detail_norm = program.detail.normalize(nf);
 
@@ -2158,7 +2157,12 @@
 			isFound = false;
 	
 			for (i = 0; i < rule.reserve_titles.length; i++) {
-				if (fullTitle_norm.match(rule.reserve_titles[i].normalize(nf)) !== null) { isFound = true; }
+				if (nf) {
+					if (fullTitle_norm.match(rule.reserve_titles[i].normalize(nf)) !== null) { isFound = true; }
+				}
+				else {
+					if (program.fullTitle.match(rule.reserve_titles[i]) !== null) { isFound = true; }
+				}
 			}
 	
 			if (!isFound) { return false; }
@@ -2167,7 +2171,12 @@
 		// ignore_titles
 		if (rule.ignore_titles) {
 			for (i = 0; i < rule.ignore_titles.length; i++) {
-				if (fullTitle_norm.match(rule.ignore_titles[i].normalize(nf)) !== null) { return false; }
+				if (nf) {
+					if (fullTitle_norm.match(rule.ignore_titles[i].normalize(nf)) !== null) { return false; }
+				}
+				else {
+					if (program.fullTitle.match(rule.ignore_titles[i]) !== null) { return false; }
+				}
 			}
 		}
 	
@@ -2178,7 +2187,12 @@
 			isFound = false;
 	
 			for (i = 0; i < rule.reserve_descriptions.length; i++) {
-				if (detail_norm.match(rule.reserve_descriptions[i].normalize(nf)) !== null) { isFound = true; }
+				if (nf) {
+					if (detail_norm.match(rule.reserve_descriptions[i].normalize(nf)) !== null) { isFound = true; }
+				}
+				else {
+					if (program.detail.match(rule.reserve_descriptions[i]) !== null) { isFound = true; }
+				}
 			}
 	
 			if (!isFound) { return false; }
@@ -2189,7 +2203,12 @@
 			if (!program.detail) { return false; }
 	
 			for (i = 0; i < rule.ignore_descriptions.length; i++) {
-				if (detail_norm.match(rule.ignore_descriptions[i].normalize(nf)) !== null) { return false; }
+				if (nf) {
+					if (detail_norm.match(rule.ignore_descriptions[i].normalize(nf)) !== null) { return false; }
+				}
+				else {
+					if (program.detail.match(rule.ignore_descriptions[i]) !== null) { return false; }
+				}
 			}
 		}
 	
@@ -2218,5 +2237,13 @@
 		}
 	
 		return true;
+	};
+	util.getNormalizationFormConfig = function() {
+		var req = new Ajax.Request('./api/config/normalizationForm.json', {
+			method: 'get',
+			asynchronous: false
+		});
+		var configText = req.transport.responseText;
+		return JSON.parse(configText);
 	};
 })();
