@@ -148,32 +148,34 @@ P = Class.create(P, {
 			for (var j = 0, m = global.chinachu.schedule[i].programs.length; j < m; j++) {
 				program = global.chinachu.schedule[i].programs[j];
 				
-				if (program.end < time) continue;
-				
-				if (query.pgid && query.pgid !== program.id) continue;
-				if (query.chid && query.chid !== program.channel.id) continue;
-				if (query.cat && query.cat !== program.category) continue;
-				if (query.type && query.type !== program.channel.type) continue;
-				if (query.title && program.fullTitle.match(query.title) === null) continue;
-				if (query.desc && (!program.detail || program.detail.match(query.desc) === null)) continue;
-				
-				if (query.start || query.end) {
-					var ruleStart = parseInt(query.start || 0, 10);
-					var ruleEnd   = parseInt(query.end || 24, 10);
-					
-					var progStart = new Date(program.start).getHours();
-					var progEnd   = new Date(program.end).getHours();
-					
-					if (progStart > progEnd) {
-						progEnd += 24;
-					}
-					
-					if (ruleStart > ruleEnd) {
-						if ((ruleStart > progStart) && (ruleEnd < progEnd)) continue;
-					} else {
-						if ((ruleStart > progStart) || (ruleEnd < progEnd)) continue;
-					}
-				}
+				var ret = chinachu.ui.programMatchesRule(query, program);
+				if (!ret) continue;
+				// if (program.end < time) continue;
+				// 
+				// if (query.pgid && query.pgid !== program.id) continue;
+				// if (query.chid && query.chid !== program.channel.id) continue;
+				// if (query.cat && query.cat !== program.category) continue;
+				// if (query.type && query.type !== program.channel.type) continue;
+				// if (query.title && program.fullTitle.match(query.title) === null) continue;
+				// if (query.desc && (!program.detail || program.detail.match(query.desc) === null)) continue;
+				// 
+				// if (query.start || query.end) {
+				// 	var ruleStart = parseInt(query.start || 0, 10);
+				// 	var ruleEnd   = parseInt(query.end || 24, 10);
+				// 	
+				// 	var progStart = new Date(program.start).getHours();
+				// 	var progEnd   = new Date(program.end).getHours();
+				// 	
+				// 	if (progStart > progEnd) {
+				// 		progEnd += 24;
+				// 	}
+				// 	
+				// 	if (ruleStart > ruleEnd) {
+				// 		if ((ruleStart > progStart) && (ruleEnd < progEnd)) continue;
+				// 	} else {
+				// 		if ((ruleStart > progStart) || (ruleEnd < progEnd)) continue;
+				// 	}
+				// }
 				
 				programs.push(program);
 			}
