@@ -2083,6 +2083,7 @@
 	util.programMatchesRule = function (rule, program, nf) {
 		var i, j, l, m, isFound;
 	
+<<<<<<< HEAD
 		var fullTitle_norm = program.fullTitle.normalize(nf);
 		var detail_norm = program.detail.normalize(nf);
 

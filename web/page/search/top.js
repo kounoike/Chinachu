@@ -166,7 +166,10 @@ P = Class.create(P, {
 		}
 
 		// 正規化方法
-		var nf = chinachu.util.getNormalizationFormConfig();
+		var nf;
+		if (global.chinachu.status.feature) {
+			nf = global.chinachu.status.feature.normalizationForm;
+		}
 
 		for (var i = 0, l = global.chinachu.schedule.length; i < l; i++) {
 			for (var j = 0, m = global.chinachu.schedule[i].programs.length; j < m; j++) {
