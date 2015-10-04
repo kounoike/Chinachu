@@ -63,13 +63,6 @@ P = Class.create(P, {
 			fill         : true,
 			cols: [
 				{
-					key  : 'reserve',
-					label: '予約',
-					width: 45,
-					align: 'center',
-					disableResize: true
-				},
-				{
 					key  : 'type',
 					label: '放送波',
 					width: 45,
@@ -282,12 +275,6 @@ P = Class.create(P, {
 				]
 			};
 			
-			row.cell.reserve = {
-				sortAlt : program._isReserves ? program.isManualReserved ? 1 : 2 : 0,
-				className: 'reserves',
-				html : program._isReserves ? program.isManualReserved ? '<span class="reserve-manual">手動</span>' : '<span class="reserve-rule">ルール</span>' : '<span class="reserve-none"></span>'
-			};
-
 			row.cell.type = {
 				sortAlt  : program.channel.type,
 				className: 'types',
@@ -308,6 +295,12 @@ P = Class.create(P, {
 				}
 			};
 			
+			row.cell.reserve = {
+				sortAlt : program._isReserves ? program.isManualReserved ? 1 : 2 : 0,
+				className: 'reserves',
+				html : program._isReserves ? program.isManualReserved ? '<span class="reserve-manual">手動</span>' : '<span class="reserve-rule">ルール</span>' : '<span class="reserve-none"></span>'
+			};
+
 			var titleHtml = program.flags.invoke('sub', /.+/, '<span class="flag #{0}">#{0}</span>').join('') + program.title;
 			if (program.subTitle && program.title.match(program.subTitle) === null) {
 				titleHtml += '<span class="subtitle">' + program.subTitle + '</span>';
@@ -317,6 +310,17 @@ P = Class.create(P, {
 			}
 			titleHtml += '<span class="id">#' + program.id + '</span>';
 			
+			if (program._isRecording) {
+				titleHtml = '<span class="flag recording">録画中</span>' + titleHtml;
+			}
+			if (program._isReserves) {
+				if (program.isManualReserved) {
+					titleHtml = '<span class="flag manual">手動</span>' + titleHtml;
+				}
+				else {
+					titleHtml = '<span class="flag rule">ルール</span>' + titleHtml;
+				}
+			}
 			row.cell.title = {
 				sortAlt    : program.title,
 				html       : titleHtml,
