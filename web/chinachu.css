@@ -1463,17 +1463,6 @@ td.default > div {
 	font-style: italic;
 	font-size : 11px; }
 
-td.reserves > div >span {
-	padding : 0 3px;
-	font-size: 11px;
-	margin-right: 2px;
-	color: #eee;
-	border-radius: 2px;
-}
-
-td.reserves > div > span.reserve-rule { background-color: #090; }
-td.reserves > div > span.reserve-manual { background-color: #900; }
-
 td.types > div > span {
 	padding      : 0 3px;
 	font-size    : 11px;
@@ -1504,6 +1493,12 @@ td > div > span.flag {
 
 td > div > span.flag.manual {
 	background  : #000; }
+
+td > div > span.flag.rule {
+	background : #00f; }
+
+td > div > span.flag.recording {
+	background : #f00; }
 
 td > div > span.flag.新 {
 	background  : #6ed02e; }
