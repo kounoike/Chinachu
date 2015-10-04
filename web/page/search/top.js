@@ -65,6 +65,13 @@ P = Class.create(P, {
 			fill         : true,
 			cols: [
 				{
+					key  : 'reserve',
+					label: '予約',
+					width: 45,
+					align: 'center',
+					disableResize: true
+				},
+				{
 					key  : 'type',
 					label: '放送波',
 					width: 45,
@@ -184,13 +191,15 @@ P = Class.create(P, {
 
 				if (!ret) continue;
 				
-				programs.push(program);
+				programs.push(chinachu.util.getProgramById(program.id));
 			}
 		}
 		
 		programs.sort(function(a, b) {
 			return a.start - b.start;
 		});
+
+		global.programs = programs;
 		
 		programs.each(function(program, i) {
 			
@@ -284,6 +293,12 @@ P = Class.create(P, {
 				]
 			};
 			
+			row.cell.reserve = {
+				sortAlt : program._isReserves ? program.isManualReserved ? 1 : 2 : 0,
+				className: 'reserves',
+				html : program._isReserves ? program.isManualReserved ? '<span class="reserve-manual">手動</span>' : '<span class="reserve-rule">ルール</span>' : '<span class="reserve-none"></span>'
+			};
+
 			row.cell.type = {
 				sortAlt  : program.channel.type,
 				className: 'types',
