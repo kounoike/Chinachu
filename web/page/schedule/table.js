@@ -959,26 +959,27 @@
 											var dummy = new chinachu.ui.Unreserve(a.program.id);
 										}
 									});
+								} else {
+									if (a.isSkip) {
+										a._rect.addClassName('skip');
+										contextMenuItems.unshift({
+											label   : 'スキップの取消...',
+											icon    : './icons/tick-circle.png',
+											onSelect: function () {
+												var dummy = new chinachu.ui.Unskip(a.program.id);
+											}
+										});
+									} else {
+										contextMenuItems.unshift({
+											label   : 'スキップ...',
+											icon    : './icons/exclamation-red.png',
+											onSelect: function () {
+												var dummy = new chinachu.ui.Skip(a.program.id);
+											}
+										});
+									}
 								}
 								
-								if (a.isSkip) {
-									a._rect.addClassName('skip');
-									contextMenuItems.unshift({
-										label   : 'スキップの取消...',
-										icon    : './icons/tick-circle.png',
-										onSelect: function () {
-											var dummy = new chinachu.ui.Unskip(a.program.id);
-										}
-									});
-								} else {
-									contextMenuItems.unshift({
-										label   : 'スキップ...',
-										icon    : './icons/exclamation-red.png',
-										onSelect: function () {
-											var dummy = new chinachu.ui.Skip(a.program.id);
-										}
-									});
-								}
 							} else {
 								contextMenuItems.unshift({
 									label   : '予約...',
