@@ -39,6 +39,7 @@ var socketio      = require('socket.io');
 var chinachu      = require('chinachu-common');
 var S             = require('string');
 var geoip         = require('geoip-lite');
+var IPCheck       = require('ipcheck');
 var UPnPServer    = require('chinachu-upnp-server');
 
 // Directory Checking
@@ -88,6 +89,13 @@ var status = {
 		pid  : null
 	}
 };
+var allowIPs = [];
+if (Array.isArray(config.wuiAllowIPs) && config.wuiAllowIPs.length > 0) {
+	var i, l;
+	for (i = 0, l = config.wuiAllowIPs.length; i < l; i++) {
+		allowIPs.push(new IPCheck(config.wuiAllowIPs[i]));
+	}
+}
 
 // HTTPS
 var tlsOption = null;
@@ -242,9 +250,28 @@ function httpServerMain(req, res, query) {
 		].join(' '));
 	};
 
+	// Allow access to specified IPs
+	var allow = false;
+	if (allowIPs.length > 0) {
+		var ip = new IPCheck(remoteAddress);
+		var i, l;
+		for (i = 0, l = allowIPs.length; i < l; i++) {
+			if (ip.match(allowIPs[i])) {
+				allow = true;
+				break;
+			}
+		}
+	}
+
 	// country restriction
-	if (Array.isArray(config.wuiAllowCountries) && config.wuiAllowCountries.length > 0) {
+	if (!allow && Array.isArray(config.wuiAllowCountries) && config.wuiAllowCountries.length > 0) {
 		var geo = geoip.lookup(remoteAddress);
+		if (geo === null && allowIPs.length > 0) {
+			res.writeHead(403, {'content-type': 'text/plain'});
+			res.end('403 Forbidden\n');
+			log(403);
+			console.warn('Non-allowed private or unknown IP Blocked', remoteAddress);
+		}
 		if (geo !== null && config.wuiAllowCountries.indexOf(geo.country) === -1) {
 			res.writeHead(403, {'content-type': 'text/plain'});
 			res.end('403 Forbidden\n');
