@@ -385,8 +385,7 @@ function convertPrograms(p, ch) {
 		title = title
 			.replace(/【.{1,2}】/g, '')
 			.replace(/\[.\]/g, '')
-			.replace(/(#|＃|♯)[0-9０１２３４５６７８９]+/g, '')
-			.replace(/第([0-9]+|[０１２３４５６７８９零一壱二弐三参四五伍六七八九十拾]+)(話|回)/g, '');
+			.replace(/[\s「（#＃♯第]+[0-9０-９零一壱壹弌二弐貮貳三参參弎四肆五伍六陸七柒漆八捌九玖十拾廿]+.{0,2}目?/g, '');
 		
 		if (c.category[1]._ === 'anime') {
 			title = title.replace(/(?:TV|ＴＶ)?アニメ「([^「」]+)」/g, '$1');
