@@ -1074,6 +1074,11 @@ function getEpg() {
 			
 			writeOut(scheduler);
 			
+			if (config.epgEndCommand) {
+				commandProcess = child_process.spawn(config.epgEndCommand, [process.pid, RULES_FILE, RESERVES_DATA_FILE, SCHEDULE_DATA_FILE]);
+				util.log('SPAWN: ' + config.epgEndCommand + ' (pid=' + commandProcess.pid + ')');
+			}
+			
 			return;
 		}
 		
@@ -1146,10 +1151,6 @@ isRunning(function (running) {
 				util.log('SPAWN: ' + config.epgStartCommand + ' (pid=' + commandProcess.pid + ')');
 			}
 			getEpg();
-			if (config.epgEndCommand) {
-				commandProcess = child_process.spawn(config.epgEndCommand, [process.pid, RULES_FILE, RESERVES_DATA_FILE, SCHEDULE_DATA_FILE]);
-				util.log('SPAWN: ' + config.epgEndCommand + ' (pid=' + commandProcess.pid + ')');
-			}
 		} else {
 			scheduler();
 		}
