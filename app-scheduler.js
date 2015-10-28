@@ -416,7 +416,8 @@ function convertPrograms(p, ch) {
 		}
 		
 		var episodeNumber = null;
-		var episodeNumberMatch = (c.title[0]._ + ' ' + desc).match(/(#|＃|♯)[0-9０１２３４５６７８９]+|第([0-9]+|[０１２３４５６７８９零一二三四五六七八九十]+)(話|回)|Episode ?[IⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫVX]+/);
+		// var episodeNumberMatch = (c.title[0]._ + ' ' + desc).match(/(#|＃|♯)[0-9０１２３４５６７８９]+|第([0-9]+|[０１２３４５６７８９零一二三四五六七八九十]+)(話|回)|Episode ?[IⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫVX]+/);
+		var episodeNumberMatch = (c.title[0]._ + ' ' + desc).match(/[\s「（#＃♯第]+[0-9０-９零一壱壹弌二弐貮貳三参參弎四肆五伍六陸七柒漆八捌九玖十拾廿]+.?目?/);
 		if (episodeNumberMatch !== null) {
 			var episodeNumberString = episodeNumberMatch[0];
 
