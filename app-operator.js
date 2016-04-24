@@ -365,6 +365,21 @@ function doRecord(program) {
 				util.log('SPAWN: ' + config.recordedCommand + ' (pid=' + postProcess.pid + ')');
 			}
 			
+                	// Tweeter (Experimental)
+                	if (tweeter && config.operTweeterFormat.end) {
+                	        tweeterUpdater(
+                	                config.operTweeterFormat.end
+						.replace('<id>', program.id)
+						.replace('<type>', program.channel.type)
+						.replace('<channel>', ((program.channel.type === 'CS') ? program.channel.sid : program.channel.channel))
+						.replace('<title>',   program.title)
+						.replace('<channelname>', program.channel.name)
+						.replace('<date>', dateFormat(new Date(program.start), "mm/dd"))
+						.replace('<starttime>', dateFormat(new Date(program.start), "h:MM"))
+						.replace('<endtime>', dateFormat(new Date(program.end), "h:MM"))
+                        	);
+                	}
+			
 			finalize = null;
 		};
 		// 録画プロセス終了時処理
@@ -383,6 +398,10 @@ function doRecord(program) {
 					.replace('<type>', program.channel.type)
 					.replace('<channel>', ((program.channel.type === 'CS') ? program.channel.sid : program.channel.channel))
 					.replace('<title>',   program.title)
+					.replace('<channelname>', program.channel.name)
+					.replace('<date>', dateFormat(new Date(program.start), "mm/dd"))
+					.replace('<starttime>', dateFormat(new Date(program.start), "h:MM"))
+					.replace('<endtime>', dateFormat(new Date(program.end), "h:MM"))
 			);
 		}
 		if (config.recordStartCommand) {
@@ -421,6 +440,10 @@ function prepRecord(program) {
 				.replace('<type>', program.channel.type)
 				.replace('<channel>', ((program.channel.type === 'CS') ? program.channel.sid : program.channel.channel))
 				.replace('<title>',   program.title)
+				.replace('<channelname>', program.channel.name)
+				.replace('<date>', dateFormat(new Date(program.start), "mm/dd"))
+				.replace('<starttime>', dateFormat(new Date(program.start), "h:MM"))
+				.replace('<endtime>', dateFormat(new Date(program.end), "h:MM"))
 		);
 	}
 	if ((timeout !== 0) && config.recordPrepareCommand) {
